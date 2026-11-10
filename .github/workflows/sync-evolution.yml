@@ -37,7 +37,7 @@ jobs:
           only = sys.argv[1].strip()
           rows = []
           for line in open('evo-repos.txt', encoding='utf-8'):
-              line = line.strip()
+              line = line.lstrip('\ufeff').strip()
               if not line or line.startswith('#'):
                   continue
               name = line.split('|')[0].strip()

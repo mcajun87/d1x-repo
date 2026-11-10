@@ -1,4 +1,4 @@
-﻿# Evolution-X 上游仓库清单（用于每日镜像同步）
+# Evolution-X 上游仓库清单（用于每日镜像同步）
 #
 # 源站：https://github.com/Evolution-X
 # 自己的镜像仓库统一命名为 Evolution-X_<上游仓库名>，
