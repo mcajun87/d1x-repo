@@ -1,11 +1,11 @@
-# HackiOS 相关仓库（每天同步上游）
-# 格式：<上游 owner/repo>|<你的 fork 名>|<分支>
+# HackiOS（XNU on Android）—— 每个仓库一份镜像，命名 <Owner>_<Repo>
+# 格式：<上游>|<你的仓库>|<分支>
 #
-# 说明：
-#  - hakios-xnu-kernel 是主项目（XNU 内核 + 自带 loader/驱动 + Metal on Adreno）
-#    仓库里 devices/ socs/ drivers/ 分别放机型、SoC、驱动，单仓无 submodule
-#  - 移植一个机型（如 d1x / Exynos 9825）的官方做法见
-#    iola1999/hackios-redmi-k90-annibale：fork 内核与 userland，各建 <device>-port 分支，
-#    再在自己的工作区里用 submodule 指过去
-oosexgang/hakios-xnu-kernel|hakios-xnu-kernel|main
-opa334/TrollStore|TrollStore|main
+# 主项目 oosexgang/hakios-xnu-kernel 单仓库无 submodule：devices/ socs/ drivers/
+# hakios-metal/ prebuilt/ sysimage/ qemu/ tools/ + Makefile、mkxnuimg.py
+#
+# 移植 d1x 的正确姿势（照 iola1999/hackios-redmi-k90-annibale）：
+#   fork/镜像 内核与 userland → 各建 d1x-port 分支 → 再用一个工作区仓库以 submodule 指过去
+oosexgang/hakios-xnu-kernel|mcajun87/oosexgang_hakios-xnu-kernel|main
+iola1999/hackios-xnu-userland|mcajun87/iola1999_hackios-xnu-userland|k90-port
+opa334/TrollStore|mcajun87/opa334_TrollStore|main

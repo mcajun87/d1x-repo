@@ -1,27 +1,26 @@
-# d1x (Galaxy Note10 5G / SM-N971N) 需要的全部仓库
-# 格式：<本地路径>|<你的fork>|<上游>|<分支>|<是否需要强制同步上游>
+# d1x 所需仓库（命名约定：<上游Owner>_<仓库名>）
+# 格式：<本地路径>|<你的仓库>|<上游>|<分支>|<强制同步?>
 #
-# 最后一列为 yes 的仓库是"纯上游镜像"（我们不改它），同步脚本会强制对齐上游；
-# 为 no 的仓库有我们自己的提交，同步脚本只会 fetch，绝不覆盖。
+# 说明：最后一列 yes 的仓库同步脚本会强制对齐上游；no 的仓库有自己的提交，只 fetch 不覆盖。
 
-# ---- 我们自己的设备相关仓库（有本地补丁，不同步）----
+# ---- 自己的设备相关仓库（有本地补丁）----
 device/samsung/d1x|mcajun87/Rocky7842_android_device_samsung_d1x|Rocky7842/android_device_samsung_d1x|crdroid-17.0|no
 device/samsung/exynos9820-common|mcajun87/Rocky7842_android_device_samsung_exynos9820-common|Rocky7842/android_device_samsung_exynos9820-common|lineage-24.0|no
 vendor/samsung/d1x|mcajun87/Rocky7842_proprietary_vendor_samsung_d1x|Rocky7842/proprietary_vendor_samsung_d1x|lineage-24.0|no
 vendor/samsung/exynos9820-common|mcajun87/Rocky7842_proprietary_vendor_samsung_exynos9820-common|Rocky7842/proprietary_vendor_samsung_exynos9820-common|lineage-24.0|no
 kernel/samsung/exynos9820|mcajun87/Rocky7842_android_kernel_samsung_exynos9820|Rocky7842/android_kernel_samsung_exynos9820|lineage-24.0-ksu|no
 
-# ---- OrangeFox 用（已在自己账号，不同步）----
-device/samsung/d1x (OrangeFox)|mcajun87/android_device_samsung_d1x|mcajun87/android_device_samsung_d1x|fox_16.0|no
-device/samsung/exynos9820-common (OrangeFox)|mcajun87/android_device_samsung_exynos9820-common|mcajun87/android_device_samsung_exynos9820-common|fox_16.0|no
+# ---- OrangeFox ----
+device/samsung/d1x (OF)|mcajun87/android_device_samsung_d1x|mcajun87/android_device_samsung_d1x|fox_16.0|no
+device/samsung/exynos9820-common (OF)|mcajun87/android_device_samsung_exynos9820-common|mcajun87/android_device_samsung_exynos9820-common|fox_16.0|no
 
-# ---- 纯上游镜像（LineageOS，可强制同步）----
-device/samsung_slsi/sepolicy|mcajun87/android_device_samsung_slsi_sepolicy|LineageOS/android_device_samsung_slsi_sepolicy|lineage-24.0|yes
-hardware/samsung|mcajun87/android_hardware_samsung|LineageOS/android_hardware_samsung|lineage-24.0|yes
-hardware/samsung_slsi-linaro/config|mcajun87/android_hardware_samsung_slsi-linaro_config|LineageOS/android_hardware_samsung_slsi-linaro_config|lineage-24.0|yes
-hardware/samsung_slsi-linaro/exynos|mcajun87/android_hardware_samsung_slsi-linaro_exynos|LineageOS/android_hardware_samsung_slsi-linaro_exynos|lineage-24.0|yes
-hardware/samsung_slsi-linaro/exynos5|mcajun87/android_hardware_samsung_slsi-linaro_exynos5|LineageOS/android_hardware_samsung_slsi-linaro_exynos5|lineage-24.0|yes
-hardware/samsung_slsi-linaro/graphics|mcajun87/android_hardware_samsung_slsi-linaro_graphics|LineageOS/android_hardware_samsung_slsi-linaro_graphics|lineage-24.0|yes
-hardware/samsung_slsi-linaro/interfaces|mcajun87/android_hardware_samsung_slsi-linaro_interfaces|LineageOS/android_hardware_samsung_slsi-linaro_interfaces|lineage-24.0|yes
-hardware/samsung_slsi-linaro/openmax|mcajun87/android_hardware_samsung_slsi-linaro_openmax|LineageOS/android_hardware_samsung_slsi-linaro_openmax|lineage-24.0|yes
-hardware/samsung_slsi/nfc|mcajun87/android_hardware_samsung_slsi_nfc|LineageOS/android_hardware_samsung_slsi_nfc|lineage-24.0|yes
+# ---- LineageOS 公共组件（已全部 fork 并改名，可强制同步）----
+device/samsung_slsi/sepolicy|mcajun87/LineageOS_android_device_samsung_slsi_sepolicy|LineageOS/android_device_samsung_slsi_sepolicy|lineage-24.0|yes
+hardware/samsung|mcajun87/LineageOS_android_hardware_samsung|LineageOS/android_hardware_samsung|lineage-24.0|yes
+hardware/samsung_slsi-linaro/config|mcajun87/LineageOS_android_hardware_samsung_slsi-linaro_config|LineageOS/android_hardware_samsung_slsi-linaro_config|lineage-24.0|yes
+hardware/samsung_slsi-linaro/exynos|mcajun87/LineageOS_android_hardware_samsung_slsi-linaro_exynos|LineageOS/android_hardware_samsung_slsi-linaro_exynos|lineage-24.0|yes
+hardware/samsung_slsi-linaro/exynos5|mcajun87/LineageOS_android_hardware_samsung_slsi-linaro_exynos5|LineageOS/android_hardware_samsung_slsi-linaro_exynos5|lineage-24.0|yes
+hardware/samsung_slsi-linaro/graphics|mcajun87/LineageOS_android_hardware_samsung_slsi-linaro_graphics|LineageOS/android_hardware_samsung_slsi-linaro_graphics|lineage-24.0|yes
+hardware/samsung_slsi-linaro/interfaces|mcajun87/LineageOS_android_hardware_samsung_slsi-linaro_interfaces|LineageOS/android_hardware_samsung_slsi-linaro_interfaces|lineage-24.0|yes
+hardware/samsung_slsi-linaro/openmax|mcajun87/LineageOS_android_hardware_samsung_slsi-linaro_openmax|LineageOS/android_hardware_samsung_slsi-linaro_openmax|lineage-24.0|yes
+hardware/samsung_slsi/nfc|mcajun87/LineageOS_android_hardware_samsung_slsi_nfc|LineageOS/android_hardware_samsung_slsi_nfc|lineage-24.0|yes
