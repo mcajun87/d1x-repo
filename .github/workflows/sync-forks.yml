@@ -1,0 +1,47 @@
+# 每天把 LineageOS 上游同步到自己的 fork（只同步 repos.txt 里标记为 yes 的纯镜像仓库）
+#
+# 需要：本仓库 Settings → Secrets and variables → Actions 里加一个
+#       SYNC_TOKEN = 你的 PAT（classic，勾 repo 权限）
+#       自带的 GITHUB_TOKEN 只能写本仓库，不能写其他仓库。
+name: sync forks from upstream
+
+on:
+  schedule:
+    - cron: '17 3,15 * * *'    # 每天 03:17 和 15:17 (UTC) = 北京时间 11:17 / 23:17
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { path: device/samsung_slsi/sepolicy,             fork: android_device_samsung_slsi_sepolicy }
+          - { path: hardware/samsung,                          fork: android_hardware_samsung }
+          - { path: hardware/samsung_slsi-linaro/config,       fork: android_hardware_samsung_slsi-linaro_config }
+          - { path: hardware/samsung_slsi-linaro/exynos,       fork: android_hardware_samsung_slsi-linaro_exynos }
+          - { path: hardware/samsung_slsi-linaro/exynos5,      fork: android_hardware_samsung_slsi-linaro_exynos5 }
+          - { path: hardware/samsung_slsi-linaro/graphics,     fork: android_hardware_samsung_slsi-linaro_graphics }
+          - { path: hardware/samsung_slsi-linaro/interfaces,   fork: android_hardware_samsung_slsi-linaro_interfaces }
+          - { path: hardware/samsung_slsi-linaro/openmax,      fork: android_hardware_samsung_slsi-linaro_openmax }
+          - { path: hardware/samsung_slsi/nfc,                 fork: android_hardware_samsung_slsi_nfc }
+    steps:
+      - name: Mirror upstream -> fork (${{ matrix.fork }})
+        env:
+          TOK: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          set -eu
+          [ -n "${TOK:-}" ] || { echo "::error::缺少 secret SYNC_TOKEN"; exit 1; }
+          UP="https://github.com/LineageOS/${{ matrix.fork }}.git"
+          DST="https://x-access-token:${TOK}@github.com/mcajun87/${{ matrix.fork }}.git"
+          git clone --bare --filter=blob:none "$UP" work.git
+          cd work.git
+          git remote set-url origin "$DST"
+          # 只同步名为 lineage-24.0 的分支，避免误删 fork 里的其他分支
+          git push --force origin "refs/heads/lineage-24.0:refs/heads/lineage-24.0"
+          echo "synced ${{ matrix.fork }} @ $(git rev-parse --short lineage-24.0)"

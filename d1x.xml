@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<manifest>
+  <remote name="mcajun" fetch="https://github.com/mcajun87" />
+  <remote name="los"    fetch="https://github.com/LineageOS" />
+
+  <!-- 设备相关：指向自己的 fork（带本地补丁，不要改成上游） -->
+  <project name="Rocky7842_android_device_samsung_d1x"                      path="device/samsung/d1x"                     remote="mcajun" revision="crdroid-17.0" />
+  <project name="Rocky7842_android_device_samsung_exynos9820-common"        path="device/samsung/exynos9820-common"       remote="mcajun" revision="lineage-24.0" />
+  <project name="Rocky7842_proprietary_vendor_samsung_d1x"                  path="vendor/samsung/d1x"                     remote="mcajun" revision="lineage-24.0" />
+  <project name="Rocky7842_proprietary_vendor_samsung_exynos9820-common"    path="vendor/samsung/exynos9820-common"       remote="mcajun" revision="lineage-24.0" />
+  <project name="Rocky7842_android_kernel_samsung_exynos9820"               path="kernel/samsung/exynos9820"              remote="mcajun" revision="lineage-24.0-ksu" />
+
+  <!-- 上游依赖：优先用镜像（同步 workflow 会保持它们与 LineageOS 一致） -->
+  <project name="android_device_samsung_slsi_sepolicy"                      path="device/samsung_slsi/sepolicy"           remote="mcajun" revision="lineage-24.0" />
+  <project name="android_hardware_samsung"                                  path="hardware/samsung"                       remote="mcajun" revision="lineage-24.0" />
+  <project name="android_hardware_samsung_slsi-linaro_config"               path="hardware/samsung_slsi-linaro/config"    remote="mcajun" revision="lineage-24.0" />
+  <project name="android_hardware_samsung_slsi-linaro_exynos"               path="hardware/samsung_slsi-linaro/exynos"    remote="mcajun" revision="lineage-24.0" />
+  <project name="android_hardware_samsung_slsi-linaro_exynos5"              path="hardware/samsung_slsi-linaro/exynos5"   remote="mcajun" revision="lineage-24.0" />
+  <project name="android_hardware_samsung_slsi-linaro_graphics"             path="hardware/samsung_slsi-linaro/graphics"  remote="mcajun" revision="lineage-24.0" />
+  <project name="android_hardware_samsung_slsi-linaro_interfaces"           path="hardware/samsung_slsi-linaro/interfaces" remote="mcajun" revision="lineage-24.0" />
+  <project name="android_hardware_samsung_slsi-linaro_openmax"              path="hardware/samsung_slsi-linaro/openmax"   remote="mcajun" revision="lineage-24.0" />
+  <project name="android_hardware_samsung_slsi_nfc"                         path="hardware/samsung_slsi/nfc"              remote="mcajun" revision="lineage-24.0" />
+</manifest>
