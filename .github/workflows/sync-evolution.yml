@@ -1,0 +1,67 @@
+# 每天把 Evolution-X 上游同步到自己的 fork（纯镜像，强制对齐）
+# 需要 secret：SYNC_TOKEN（GitHub PAT，classic，勾 repo）
+name: sync evolution-x forks
+
+on:
+  schedule:
+    - cron: '43 5,17 * * *'
+  workflow_dispatch:
+    inputs:
+      only:
+        description: '只同步某个仓库名（留空=全部）'
+        type: string
+        default: ''
+
+permissions:
+  contents: read
+
+jobs:
+  list:
+    runs-on: ubuntu-latest
+    outputs:
+      matrix: ${{ steps.gen.outputs.matrix }}
+    steps:
+      - uses: actions/checkout@v4
+      - id: gen
+        run: |
+          set -eu
+          python3 - "${{ inputs.only }}" <<'PY' > matrix.json
+          import json, sys
+          only = sys.argv[1].strip()
+          rows = []
+          for line in open('evo-repos.txt', encoding='utf-8'):
+              line = line.strip()
+              if not line or line.startswith('#'):
+                  continue
+              name, _, rev = line.partition('|')
+              if only and name != only:
+                  continue
+              rows.append({"name": name, "branch": rev or 'cnb'})
+          json.dump({"include": rows}, sys.stdout)
+          PY
+          echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
+          python3 -c "import json;print('将同步', len(json.load(open('matrix.json'))['include']), '个仓库')"
+
+  sync:
+    needs: list
+    runs-on: ubuntu-latest
+    timeout-minutes: 240
+    strategy:
+      fail-fast: false
+      max-parallel: 6
+      matrix: ${{ fromJson(needs.list.outputs.matrix) }}
+    steps:
+      - name: Sync ${{ matrix.name }}@${{ matrix.branch }}
+        env:
+          TOK: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          set -eu
+          [ -n "${TOK:-}" ] || { echo "::error::缺少 secret SYNC_TOKEN"; exit 1; }
+          git clone --bare --filter=blob:none \
+            "https://github.com/Evolution-X/${{ matrix.name }}.git" w.git
+          cd w.git
+          git remote set-url origin \
+            "https://x-access-token:${TOK}@github.com/mcajun87/${{ matrix.name }}.git"
+          git push --force origin \
+            "refs/heads/${{ matrix.branch }}:refs/heads/${{ matrix.branch }}"
+          echo "OK ${{ matrix.name }}@${{ matrix.branch }} $(git rev-parse --short ${{ matrix.branch }})"

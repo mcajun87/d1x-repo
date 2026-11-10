@@ -57,3 +57,13 @@ Actions 页面 → `sync forks from upstream` → Run workflow。
 清单见 [`hackios-repos.txt`](hackios-repos.txt)，同步见
 [`.github/workflows/sync-hackios.yml`](.github/workflows/sync-hackios.yml)
 （每天两次，只强制同步清单里写的分支，不会动你自己的移植分支）。
+
+## Evolution X 上游仓库
+
+ROM 构建还需要 Evolution-X 自己的仓库（`snippets/evolution.xml` 里 `remote="evo"` 的全部），
+清单见 [`evo-repos.txt`](evo-repos.txt)，同步见
+[`.github/workflows/sync-evolution.yml`](.github/workflows/sync-evolution.yml)。
+
+- 每天两次（北京 13:43 / 01:43），也可在 Actions 页手动触发并指定单个仓库
+- 这些是**纯镜像**，同步会强制对齐上游；要改的东西请放进 `repos.txt` 里标记 `no` 的仓库
+- 同样需要 secret `SYNC_TOKEN`
