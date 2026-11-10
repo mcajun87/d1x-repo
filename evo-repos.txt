@@ -1,7 +1,83 @@
-# Evolution-X 仓库（源站：https://github.com/Evolution-X）
-# 格式：<仓库名>|<你的仓库>|<分支>
-# 说明：EvoX 仓库不在 GitHub，用 clone --mirror 镜像；本地不要直接改，改动放进 repos.txt 里 no 的仓库
-manifest|mcajun87/Evolution-X_manifest|cnb
-vendor_evolution|mcajun87/Evolution-X_vendor_evolution|cnb
-build|mcajun87/Evolution-X_build|cnb
-bootable_recovery|mcajun87/Evolution-X_bootable_recovery|cnb
+﻿# Evolution-X 上游仓库清单（用于每日镜像同步）
+#
+# 源站：https://github.com/Evolution-X
+# 自己的镜像仓库统一命名为 Evolution-X_<上游仓库名>，
+# 所以这里只写上游仓库名，workflow 会自动拼出目标仓库。
+#
+# 同步方式：git push --mirror —— 纯镜像、强制对齐，
+# 因此这些仓库里不要放自己的改动；改动请放进 device/samsung/* 和 kernel/*。
+#
+art
+bionic
+bootable_recovery
+build
+build_soong
+device_evolution_sepolicy
+external_bouncycastle
+external_FadingEdgeLayout
+external_libpng
+external_pffft
+external_piex
+external_steam-audio
+frameworks_av
+frameworks_base
+frameworks_libs_systemui
+frameworks_native
+frameworks_opt_net_wifi
+frameworks_opt_telephony
+hardware_google_pixel
+hardware_interfaces
+hardware_lineage_compat
+hardware_qcom_audio-ar
+hardware_qcom_display
+kernel_configs
+lineage-sdk
+manifest
+OTA
+packages_apps_AppLocker
+packages_apps_ColumbusService
+packages_apps_EvoEgg
+packages_apps_Evolver
+packages_apps_FaceUnlock
+packages_apps_GameSpace
+packages_apps_LineageParts
+packages_apps_LMOFreeform
+packages_apps_OmniStyle
+packages_apps_Sandbox
+packages_apps_Settings
+packages_apps_SetupWizard
+packages_apps_Stk
+packages_apps_SystemUIClocks
+packages_apps_ThemeStore
+packages_apps_Updater
+packages_apps_WallpaperPicker2
+packages_modules_Bluetooth
+packages_modules_common
+packages_modules_Connectivity
+packages_modules_Permission
+packages_modules_Wifi
+packages_providers_MediaProvider
+packages_providers_TelephonyProvider
+packages_resources_apps
+packages_services_AxQuickLook
+packages_services_Iwlan
+packages_services_OmniJaws
+packages_services_Telecomm
+packages_services_Telephony
+system_core
+system_fs_fs_mgr
+system_libhwbinder
+system_media
+system_memory_libmeminfo
+system_netd
+system_sepolicy
+system_update_engine
+system_vold
+vendor_evolution
+vendor_extras
+vendor_gms
+vendor_gms-mosey
+vendor_packages_SettingsGoogle
+vendor_packages_SystemUIGoogle
+vendor_pixel-style
+vendor_themes

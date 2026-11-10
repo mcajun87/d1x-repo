@@ -1,14 +1,21 @@
-# 每天把 Evolution-X 上游同步到自己的 fork（纯镜像，强制对齐）
+# 每天把 Evolution-X 上游同步到自己的镜像仓库（纯镜像，强制对齐）
 # 需要 secret：SYNC_TOKEN（GitHub PAT，classic，勾 repo）
+#
+# 命名约定：上游 Evolution-X/<name>  →  自己的 mcajun87/Evolution-X_<name>
+# 所以清单 evo-repos.txt 里只写上游仓库名，目标仓库名由这里拼出来，
+# 避免"清单里写死目标名"和"改名后忘记同步"两件事脱节。
+#
+# 这些镜像仓库是纯镜像，不要在上面放自己的改动；
+# 自己的改动放在 device/samsung/*、kernel/* 这些 fork 上。
 name: sync evolution-x forks
 
 on:
   schedule:
-    - cron: '43 5,17 * * *'
+    - cron: '43 5,17 * * *'    # 每天 05:43 / 17:43 UTC = 北京 13:43 / 01:43
   workflow_dispatch:
     inputs:
       only:
-        description: '只同步某个仓库名（留空=全部）'
+        description: '只同步某个上游仓库名（留空=全部）'
         type: string
         default: ''
 
@@ -33,10 +40,12 @@ jobs:
               line = line.strip()
               if not line or line.startswith('#'):
                   continue
-              name, _, rev = line.partition('|')
+              name = line.split('|')[0].strip()
+              if not name:
+                  continue
               if only and name != only:
                   continue
-              rows.append({"name": name, "branch": rev or 'cnb'})
+              rows.append({"name": name, "fork": "Evolution-X_" + name})
           json.dump({"include": rows}, sys.stdout)
           PY
           echo "matrix=$(cat matrix.json)" >> "$GITHUB_OUTPUT"
@@ -51,7 +60,7 @@ jobs:
       max-parallel: 6
       matrix: ${{ fromJson(needs.list.outputs.matrix) }}
     steps:
-      - name: Sync ${{ matrix.name }}@${{ matrix.branch }}
+      - name: Mirror Evolution-X/${{ matrix.name }} -> ${{ matrix.fork }}
         env:
           TOK: ${{ secrets.SYNC_TOKEN }}
         run: |
@@ -61,7 +70,8 @@ jobs:
             "https://github.com/Evolution-X/${{ matrix.name }}.git" w.git
           cd w.git
           git remote set-url origin \
-            "https://x-access-token:${TOK}@github.com/mcajun87/${{ matrix.name }}.git"
-          git push --force origin \
-            "refs/heads/${{ matrix.branch }}:refs/heads/${{ matrix.branch }}"
-          echo "OK ${{ matrix.name }}@${{ matrix.branch }} $(git rev-parse --short ${{ matrix.branch }})"
+            "https://x-access-token:${TOK}@github.com/mcajun87/${{ matrix.fork }}.git"
+          # 全分支强制镜像：上游有什么就是什么
+          git push --force --prune origin 'refs/heads/*:refs/heads/*'
+          git push --force origin 'refs/tags/*:refs/tags/*' || true
+          echo "OK ${{ matrix.name }} -> ${{ matrix.fork }}"
