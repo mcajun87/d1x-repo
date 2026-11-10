@@ -1,0 +1,49 @@
+# 每天把 HackiOS 上游同步到自己的 fork
+# 需要 secret：SYNC_TOKEN（GitHub PAT，classic，勾 repo）
+#
+# 只同步 hackios-repos.txt 里列出的纯镜像仓库。
+# 你的移植分支（例如 d1x-port）请建在自己的 fork 上，本 workflow 永远不会覆盖它，
+# 因为下面只推送清单里写的那个分支名。
+name: sync hackios forks
+
+on:
+  schedule:
+    - cron: '23 7,19 * * *'    # 每天 07:23 / 19:23 UTC = 北京 15:23 / 03:23
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - name: Mirror upstream -> fork
+        env:
+          TOK: ${{ secrets.SYNC_TOKEN }}
+        run: |
+          set -eu
+          [ -n "${TOK:-}" ] || { echo "::error::缺少 secret SYNC_TOKEN"; exit 1; }
+          grep -v '^#' hackios-repos.txt | grep -v '^$' | while IFS='|' read -r UP FORK BR; do
+            [ -z "${UP:-}" ] && continue
+            echo "::group::$UP -> mcajun87/$FORK ($BR)"
+            git clone --bare --filter=blob:none "https://github.com/$UP.git" w-$$.git
+            cd w-$$.git
+            git remote set-url origin "https://x-access-token:${TOK}@github.com/mcajun87/$FORK.git"
+            if git rev-parse --verify --quiet "refs/heads/$BR" >/dev/null; then
+              git push --force origin "refs/heads/$BR:refs/heads/$BR"
+              echo "OK $FORK@$BR = $(git rev-parse --short "$BR")"
+            else
+              echo "::warning::上游没有分支 $BR，尝试 main"
+              if git rev-parse --verify --quiet refs/heads/main >/dev/null; then
+                git push --force origin refs/heads/main:refs/heads/main
+                echo "OK $FORK@main"
+              fi
+            fi
+            cd ..
+            rm -rf w-$$.git
+            echo "::endgroup::"
+            sleep 5
+          done

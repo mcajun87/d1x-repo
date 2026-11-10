@@ -45,3 +45,15 @@ Actions 页面 → `sync forks from upstream` → Run workflow。
 - 带补丁的 5 个仓库（设备树/公共树/vendor/内核）**永远不会被自动覆盖**
 - 本仓库配套的设备树说明见
   [android_device_samsung_d1x/docs/CUSTOMIZATIONS.md](https://github.com/mcajun87/android_device_samsung_d1x/blob/fox_16.0/docs/CUSTOMIZATIONS.md)
+
+## HackiOS（XNU on Android）仓库
+
+| 仓库 | 说明 |
+| :-- | :-- |
+| [oosexgang/hakios-xnu-kernel](https://github.com/oosexgang/hakios-xnu-kernel) | 主项目：XNU 内核 + 自带 loader/驱动 + Metal on Adreno，从内存运行，重启回 Android。单仓库，无 submodule；`devices/` `socs/` `drivers/` 分层 |
+| [iola1999/hackios-redmi-k90-annibale](https://github.com/iola1999/hackios-redmi-k90-annibale) | 机型移植工作区范例（REDMI K90 / SM8750）：以 submodule 指向自己的 `hakios-xnu-kernel`、`hakios-xnu-userland`、`TrollStore` 的 `<device>-port` 分支 |
+| [corellium/projectsandcastle](https://github.com/corellium/projectsandcastle) | 前身项目（Android/Linux on iPhone），固件打包与 loader 可参考 |
+
+清单见 [`hackios-repos.txt`](hackios-repos.txt)，同步见
+[`.github/workflows/sync-hackios.yml`](.github/workflows/sync-hackios.yml)
+（每天两次，只强制同步清单里写的分支，不会动你自己的移植分支）。
