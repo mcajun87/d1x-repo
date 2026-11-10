@@ -67,3 +67,25 @@ ROM 构建还需要 Evolution-X 自己的仓库（`snippets/evolution.xml` 里 `
 - 每天两次（北京 13:43 / 01:43），也可在 Actions 页手动触发并指定单个仓库
 - 这些是**纯镜像**，同步会强制对齐上游；要改的东西请放进 `repos.txt` 里标记 `no` 的仓库
 - 同样需要 secret `SYNC_TOKEN`
+
+## OTA 更新（让别人收到你 ROM 的更新提示）
+
+| 文件 | 作用 |
+| :-- | :-- |
+| [`ota/d1x.json`](ota/d1x.json) | Evolution X Updater 读取的更新清单 |
+| [`.github/workflows/ota-update.yml`](.github/workflows/ota-update.yml) | 本仓库**发布 Release 时自动更新** d1x.json |
+
+Raw 地址（设备树里要指到这个）：
+
+```
+https://raw.githubusercontent.com/mcajun87/d1x-repo/main/ota/d1x.json
+```
+
+设备树侧配置（`device/samsung/exynos9820-common/device-common.mk`）：
+
+```makefile
+PRODUCT_PROPERTY_OVERRIDES += \
+    lineage.updater.uri=https://raw.githubusercontent.com/mcajun87/d1x-repo/main/ota/d1x.json
+```
+
+刷机仍然走 **OrangeFox**（把 ROM zip 放进手机，OrangeFox 里 Install 即可）。

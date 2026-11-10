@@ -1,0 +1,104 @@
+# 发布 Release 时自动更新 ota/d1x.json，让已装 ROM 的手机在 Updater 里看到新版本
+#
+# 触发方式：
+#   1) 本仓库发布 Release（release: published）
+#   2) 手动运行，指定一个已有 Release 的 tag
+#
+# 说明：Evolution X 的 Updater 读取 <OTA_URL>/d1x.json，设备树里通过
+#       lineage.updater.uri 指到
+#       https://raw.githubusercontent.com/mcajun87/d1x-repo/main/ota/d1x.json
+name: update ota manifest
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: '要写入 ota/d1x.json 的 Release tag'
+        type: string
+        required: true
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: 解析 Release 资产
+        id: rel
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ inputs.tag || github.event.release.tag_name }}
+        run: |
+          set -eu
+          [ -n "${TAG:-}" ] || { echo "::error::没有 tag"; exit 1; }
+          FILE=$(gh release view "$TAG" --json assets -q '.assets[] | select(.name | endswith(".zip")) | .name' | head -1)
+          URL=$(gh release view "$TAG" --json assets -q ".assets[] | select(.name==\"$FILE\") | .url" | head -1)
+          SIZE=$(gh release view "$TAG" --json assets -q ".assets[] | select(.name==\"$FILE\") | .size" | head -1)
+          DL="https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/${FILE}"
+          echo "tag=$TAG"   >> "$GITHUB_OUTPUT"
+          echo "file=$FILE" >> "$GITHUB_OUTPUT"
+          echo "size=$SIZE" >> "$GITHUB_OUTPUT"
+          echo "url=$DL"    >> "$GITHUB_OUTPUT"
+          [ -n "$FILE" ] || { echo "::error::Release 里没有 zip 资产"; exit 1; }
+
+      - name: 计算 sha256（无法直接哈希远端，用 GitHub 提供的 digest 或标记 UNKNOWN）
+        id: hash
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.rel.outputs.tag }}
+          FILE: ${{ steps.rel.outputs.file }}
+        run: |
+          set -eu
+          # GitHub 从 2025 起为资产提供 digest，优先用；否则留占位（Updater 仍可下载）
+          D=$(gh release view "$TAG" --json assets -q ".assets[] | select(.name==\"$FILE\") | .digest // empty" | head -1)
+          [ -n "$D" ] && D=${D#sha256:} || D="unknown"
+          echo "digest=$D" >> "$GITHUB_OUTPUT"
+
+      - name: 写 ota/d1x.json
+        env:
+          TAG: ${{ steps.rel.outputs.tag }}
+          FILE: ${{ steps.rel.outputs.file }}
+          SIZE: ${{ steps.rel.outputs.size }}
+          URL: ${{ steps.rel.outputs.url }}
+          DIGEST: ${{ steps.hash.outputs.digest }}
+        run: |
+          set -eu
+          python3 - <<'PY'
+          import json, os, time
+          p = "ota/d1x.json"
+          try:
+              d = json.load(open(p, encoding="utf-8"))
+          except Exception:
+              d = {"response": []}
+          entry = {
+              "datetime": int(time.time()),
+              "filename": os.environ["FILE"],
+              "id": os.environ["DIGEST"],
+              "romtype": "UNOFFICIAL",
+              "size": int(os.environ.get("SIZE") or 0),
+              "url": os.environ["URL"],
+              "version": os.environ["TAG"],
+              "device": "d1x",
+          }
+          d["response"] = [entry]
+          json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
+          print(json.dumps(entry, ensure_ascii=False, indent=2))
+          PY
+
+      - name: 提交
+        run: |
+          set -eu
+          git config user.name  "mcajun87"
+          git config user.email "mcajun87@users.noreply.github.com"
+          git add ota/d1x.json
+          git diff --cached --quiet && { echo "无变化"; exit 0; }
+          git commit -m "ota: point d1x.json at ${{ steps.rel.outputs.tag }}"
+          git push origin main

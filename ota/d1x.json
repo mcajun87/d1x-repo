@@ -1,0 +1,15 @@
+{
+  "response": [
+    {
+      "datetime": 1762760000,
+      "filename": "evolution_d1x-12.4-Unofficial.zip",
+      "id": "0000000000000000000000000000000000000000000000000000000000000000",
+      "romtype": "UNOFFICIAL",
+      "size": 0,
+      "url": "https://github.com/mcajun87/d1x-repo/releases",
+      "version": "12.4",
+      "device": "d1x",
+      "note": "由 ota-update workflow 在本仓库发布 Release 时自动更新；未发布前此文件仅为占位。刷机请用 OrangeFox。"
+    }
+  ]
+}
