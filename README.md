@@ -17,6 +17,29 @@ d1x 的 ROM 构建需要 14 个仓库，其中 9 个是 LineageOS 的公共组�
 另外 5 个仓库（设备树、公共树、vendor、内核、以及 OrangeFox 两个树）带本地补丁，
 **不能**被上游覆盖，同步脚本只做 fetch 不做覆盖。
 
+## 仓库命名约定：`<上游所有者>_<仓库名>`
+
+所有 fork/镜像一律改名成 `<上游所有者>_<仓库名>`，例如：
+
+| 上游 | 我的仓库 |
+| :-- | :-- |
+| `Evolution-X/frameworks_av` | `Evolution-X_frameworks_av` |
+| `Rocky7842/android_device_samsung_d1x` | `Rocky7842_android_device_samsung_d1x` |
+| `oosexgang/hakios-xnu-kernel` | `oosexgang_hakios-xnu-kernel` |
+| `iola1999/hackios-xnu-userland` | `iola1999_hackios-xnu-userland` |
+
+**为什么**：AOSP 生态里大量仓库同名（`system_core`、`libcore`、`build`…），
+不同上游的同名仓库会互相冲突；加前缀后一眼就能看出它来自谁，
+也方便同步脚本由「上游名」直接算出「目标名」，不会改名后忘记更新 workflow。
+
+因此三个同步 workflow 里都**不写死目标仓库名**，而是由上游名拼出来：
+
+| workflow | 目标仓库 |
+| :-- | :-- |
+| `sync-evolution.yml` | `mcajun87/Evolution-X_<name>` |
+| `sync-forks.yml` | `mcajun87/<矩阵里写的 fork>`（LineageOS 系，本来就是 `android_*`） |
+| `sync-hackios.yml` | `mcajun87/<上游所有者>_<仓库名>`（直接写在 `hackios-repos.txt` 里） |
+
 ## 用法
 
 ```sh
@@ -64,9 +87,15 @@ ROM 构建还需要 Evolution-X 自己的仓库（`snippets/evolution.xml` 里 `
 清单见 [`evo-repos.txt`](evo-repos.txt)，同步见
 [`.github/workflows/sync-evolution.yml`](.github/workflows/sync-evolution.yml)。
 
-- 每天两次（北京 13:43 / 01:43），也可在 Actions 页手动触发并指定单个仓库
-- 这些是**纯镜像**，同步会强制对齐上游；要改的东西请放进 `repos.txt` 里标记 `no` 的仓库
+- 清单里**只写上游仓库名**（如 `frameworks_av`），workflow 自动拼出
+  `https://github.com/Evolution-X/<name>.git` 和
+  `https://github.com/mcajun87/Evolution-X_<name>.git`，所以改名之后不会再出现
+  「清单和实际仓库名对不上」的问题
+- 每天两次（北京 13:43 / 01:43），也可在 Actions 页手动触发并指定单个上游仓库名
+- 这些是**纯镜像**，同步会把所有分支强制对齐上游；要改的东西请放进
+  `repos.txt` 里标记 `no` 的仓库（设备树 / 内核 / vendor）
 - 同样需要 secret `SYNC_TOKEN`
+- 目前镜像了 74 个 Evolution-X 仓库（`cnb` 清单里 `remote="evo"` 的那一批）
 
 ## OTA 更新（让别人收到你 ROM 的更新提示）
 
