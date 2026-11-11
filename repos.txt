@@ -8,7 +8,7 @@ device/samsung/d1x|mcajun87/Rocky7842_android_device_samsung_d1x|Rocky7842/andro
 device/samsung/exynos9820-common|mcajun87/Rocky7842_android_device_samsung_exynos9820-common|Rocky7842/android_device_samsung_exynos9820-common|lineage-24.0|no
 vendor/samsung/d1x|mcajun87/Rocky7842_proprietary_vendor_samsung_d1x|Rocky7842/proprietary_vendor_samsung_d1x|lineage-24.0|no
 vendor/samsung/exynos9820-common|mcajun87/Rocky7842_proprietary_vendor_samsung_exynos9820-common|Rocky7842/proprietary_vendor_samsung_exynos9820-common|lineage-24.0|no
-kernel/samsung/exynos9820|mcajun87/Rocky7842_android_kernel_samsung_exynos9820|Rocky7842/android_kernel_samsung_exynos9820|lineage-24.0-ksu|no
+kernel/samsung/exynos9820|mcajun87/Rocky7842_android_kernel_samsung_exynos9820|Rocky7842/android_kernel_samsung_exynos9820|lineage-24.0-sukisu-susfs|no
 
 # ---- OrangeFox ----
 device/samsung/d1x (OF)|mcajun87/android_device_samsung_d1x|mcajun87/android_device_samsung_d1x|fox_16.0|no
