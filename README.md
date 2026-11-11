@@ -118,3 +118,21 @@ PRODUCT_PROPERTY_OVERRIDES += \
 ```
 
 刷机仍然走 **OrangeFox**（把 ROM zip 放进手机，OrangeFox 里 Install 即可）。
+
+## 设备侧工具（`tools/`）
+
+刷完 ROM 之后用这三个脚本做验证/收尾，全部是幂等的、只改可逆的东西：
+
+| 脚本 | 作用 |
+| :-- | :-- |
+| `tools/verify-volte.sh` | 只读检查：运营商识别、IMS 属性、`carrier_volte_available_bool`、注册状态、IMS APN、IMS 进程 |
+| `tools/extract-stock-backlight.sh` | 从设备自己的 dtbo 里解出**原厂**背光/亮度表（亮度曲线只用原厂值或实测值，不填占位值） |
+| `tools/disable-recovery-restore.sh` | 需要 root：禁用 `org.lineageos.updater`、把 `/vendor` 与 `/system` 下所有"还原官方 recovery"的来源改名成 `.ofdis`、按住 `persist.vendor.recovery_update` |
+
+用法：
+
+```sh
+adb push tools/ /data/local/tmp/d1x-tools
+adb shell sh /data/local/tmp/d1x-tools/verify-volte.sh
+adb shell su -c "sh /data/local/tmp/d1x-tools/disable-recovery-restore.sh"
+```
