@@ -14,6 +14,9 @@ kernel/samsung/exynos9820|mcajun87/Rocky7842_android_kernel_samsung_exynos9820|R
 device/samsung/d1x (OF)|mcajun87/android_device_samsung_d1x|mcajun87/android_device_samsung_d1x|fox_16.0|no
 device/samsung/exynos9820-common (OF)|mcajun87/android_device_samsung_exynos9820-common|mcajun87/android_device_samsung_exynos9820-common|fox_16.0|no
 
+# ---- d1x 自建：CarrierConfig（带中国大陆运营商配置）----
+packages/apps/CarrierConfig|mcajun87/aosp_packages_apps_CarrierConfig|android.googlesource.com/platform/packages/apps/CarrierConfig|main|no   # d1x: 加了中国大陆 46000/46001/46003/46011/46015 的运营商配置
+
 # ---- LineageOS 公共组件（已全部 fork 并改名，可强制同步）----
 device/samsung_slsi/sepolicy|mcajun87/LineageOS_android_device_samsung_slsi_sepolicy|LineageOS/android_device_samsung_slsi_sepolicy|lineage-24.0|yes
 hardware/samsung|mcajun87/LineageOS_android_hardware_samsung|LineageOS/android_hardware_samsung|lineage-24.0|yes

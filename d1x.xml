@@ -12,6 +12,14 @@
 
   <!-- 上游依赖：优先用镜像（同步 workflow 会保持它们与 LineageOS 一致） -->
   <project name="android_device_samsung_slsi_sepolicy"                      path="device/samsung_slsi/sepolicy"           remote="mcajun" revision="lineage-24.0" />
+
+  <!-- d1x: CarrierConfig 换成我们自己的镜像（加了中国大陆 460xx 配置）。
+       AOSP 那 411 个 assets 里没有任何 460xx，导致所有国内卡都取
+       carrier_volte_available_bool=false，IMS 根本不注册。
+       这些 XML 必须在这个 APK 的 assets/ 里，PRODUCT_COPY_FILES 塞不进去，
+       所以只能把整个 project 换源。 -->
+  <remove-project name="platform/packages/apps/CarrierConfig" />
+  <project name="aosp_packages_apps_CarrierConfig"                          path="packages/apps/CarrierConfig"            remote="mcajun" revision="main" />
   <project name="android_hardware_samsung"                                  path="hardware/samsung"                       remote="mcajun" revision="lineage-24.0" />
   <project name="android_hardware_samsung_slsi-linaro_config"               path="hardware/samsung_slsi-linaro/config"    remote="mcajun" revision="lineage-24.0" />
   <project name="android_hardware_samsung_slsi-linaro_exynos"               path="hardware/samsung_slsi-linaro/exynos"    remote="mcajun" revision="lineage-24.0" />
