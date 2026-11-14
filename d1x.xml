@@ -2,13 +2,16 @@
 <manifest>
   <remote name="mcajun" fetch="https://github.com/mcajun87" />
   <remote name="los"    fetch="https://github.com/LineageOS" />
+  <remote name="rocky" fetch="https://github.com/Rocky7842" />
 
   <!-- 设备相关：指向自己的 fork（带本地补丁，不要改成上游） -->
   <project name="Rocky7842_android_device_samsung_d1x"                      path="device/samsung/d1x"                     remote="mcajun" revision="crdroid-17.0" />
   <project name="Rocky7842_android_device_samsung_exynos9820-common"        path="device/samsung/exynos9820-common"       remote="mcajun" revision="lineage-24.0" />
   <project name="Rocky7842_proprietary_vendor_samsung_d1x"                  path="vendor/samsung/d1x"                     remote="mcajun" revision="lineage-24.0" />
   <project name="Rocky7842_proprietary_vendor_samsung_exynos9820-common"    path="vendor/samsung/exynos9820-common"       remote="mcajun" revision="lineage-24.0" />
-  <project name="Rocky7842_android_kernel_samsung_exynos9820"               path="kernel/samsung/exynos9820"              remote="mcajun" revision="lineage-24.0-sukisu-susfs" />
+  <!-- [d1x] 内核改用 Rocky7842 官方的 KernelSU-Next 分支（不含 SukiSU/SUSFS）；
+       SUSFS 由我们在自己的分支 d1x-susfs 上集成后再改 revision 指过去。 -->
+  <project name="android_kernel_samsung_exynos9820"                         path="kernel/samsung/exynos9820"              remote="rocky"  revision="lineage-24.0-ksu" />
 
   <!-- 上游依赖：优先用镜像（同步 workflow 会保持它们与 LineageOS 一致） -->
   <project name="android_device_samsung_slsi_sepolicy"                      path="device/samsung_slsi/sepolicy"           remote="mcajun" revision="lineage-24.0" />
